@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/16 17:04:34 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/16 19:56:14 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,22 @@ typedef struct s_flags {
 	char	**path;
 }			t_flags;
 
-void	*ft_memalloc(size_t size);
-void	*ft_memchr(const void *s, int c, size_t n);
-char	*ft_strcpy(char *dst, const char *src);
-char	*ft_strrchr(const char *s, int c);
-size_t	ft_strlen(const char *s);
-int		flags_parser(int argc, char **argv, t_flags *flg);
-void	path_parser(int	argc, char **argv, t_flags *flg);
-void	flag_strct(int argc, char *arr, t_flags *flg);
-int		ft_memarrchr(char *arr, char *arr2);
+typedef struct s_list {
+	char	*name;
+	void	*next;
+}				t_list;
+
+void		*ft_memalloc(size_t size);
+void		*ft_memchr(const void *s, int c, size_t n);
+char		*ft_strcpy(char *dst, const char *src);
+char		*ft_strrchr(const char *s, int c);
+size_t		ft_strlen(const char *s);
+int			ft_strcmp(const char *s1, const char *s2);
+int			flags_parser(int argc, char **argv, t_flags *flg);
+void		path_parser(int	argc, char **argv, t_flags *flg);
+void		flag_strct(char *arr, t_flags *flg);
+int			ft_memarrchr(char *arr, char *arr2);
+int			scan_dir(char *arg, t_flags *flg);
 
 //err_usage;
 //err_nsf;

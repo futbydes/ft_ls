@@ -6,14 +6,16 @@
 #    By: vludan <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/12/05 15:00:01 by vludan            #+#    #+#              #
-#    Updated: 2018/01/16 17:12:13 by vludan           ###   ########.fr        #
+#    Updated: 2018/01/16 19:22:10 by vludan           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = ft_ls.c ft_memchr.c ft_memalloc.c ft_strcpy.c ft_strlen.c
+SRC = ft_ls.c ft_convers.c ft_memchr.c ft_memalloc.c ft_strcpy.c ft_strlen.c\
+	  ft_strcmp.c
 OBJ = $(SRC:.c=.o)
 INCLUDES = ft_ls.h
 NAME = ft_ls
+CFLAGS = -Wall -Werror -Wextra
 CC = gcc
 
 %.o: %.c $(INCLUDES)

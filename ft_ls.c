@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/16 17:35:57 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/16 19:32:33 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ int			ft_memarrchr(char *arr, char *arr2)
 	return (1);
 }
 
-void		flag_strct(int argc, char *arr, t_flags *flg)
+void		flag_strct(char *arr, t_flags *flg)
 {
 	int		x;
 
 	x = 1;
-	while (ft_strlen(arr) > x)
+	while ((int)ft_strlen(arr) > x)
 	{
 		arr[x] == 'R' ? flg->R = 1 : 0;
 		arr[x] == 'l' ? flg->l = 1 : 0;
@@ -56,15 +56,15 @@ int			flags_parser(int argc, char **argv, t_flags *flg)
 	y = 1;
 	flags = ft_memalloc(10);
 	ft_strcpy(flags, "Rlartufgd");
-	while (argc > y && argv[y][0] == '-')
+	while (argc > y && argv[y][0] == '-' && argv[y][1] != '-')
 	{
 		if (!(ft_memarrchr(flags, argv[y])))
-			return (1);
-		flag_strct(argc, argv[y], flg);
+			return (0);
+		flag_strct(argv[y], flg);
 		y++;
 	}
 	free(flags);
-	return (0);
+	return (1);
 }
 
 void		path_parser(int	argc, char **argv, t_flags *flg)
@@ -74,8 +74,10 @@ void		path_parser(int	argc, char **argv, t_flags *flg)
 
 	x = 0;
 	y = 1;
-	while (argv[y] != 0 && argv[y][0] == '-')
+	while (argv[y] != 0 && argv[y][0] == '-' && argv[y][1] != '-')
 		y++;
+	if (argv[y][0] == '-' && argv[y][1] == '-')
+		y += 3;
 	if (argc == y)
 		flg->path = ft_memalloc(1);
 	else
@@ -96,14 +98,14 @@ int				main(int argc, char **argv)
 {
 	t_flags		*flg;
 
-//	if (argc == 1)
-//		std_ls();
-//	else
-//	{
-		flg = ft_memalloc(sizeof(t_flags));
+	flg = ft_memalloc(sizeof(t_flags));
+	if (argc == 1)
+		scan_dir(".", flg);
+	else
+	{
 		flags_parser(argc, argv, flg);
 		path_parser(argc, argv, flg);
-		display_conv(flg);
-//	}
+	} 
+	free(flg);
 	return (0);
 }
