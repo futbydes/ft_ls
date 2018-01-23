@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/23 16:48:08 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:29:34 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,9 @@ int			scan_dir(char *arg, t_flags *flg);
 void		main_conv(t_flags *flg);
 void		recursive_dir_scan(char *path, t_flags *flg);
 void		ls_lstprint(t_list *head);
-t_list      *ls_lstalphsort(t_list *head);
 t_list      *ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg);
 t_list		*ls_lstsort(t_list *head, t_flags *flg);
-void		ls_lstbubsort(t_list **lst_m);
+t_list		*ls_lstbubsort(t_list **lst_m);
 void		ls_lstswap(t_list **lst, t_list *swp, t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 

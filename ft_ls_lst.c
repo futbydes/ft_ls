@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/23 16:52:56 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/23 17:50:08 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 
 	sort = 0;
 	if (flg->f != 1)
-	{
-		sort = ls_lstalphsort(head);
-	}
+		sort = ls_lstbubsort(&head);
 	return (sort);
 	/*
 	if (flg->l)
@@ -66,34 +64,7 @@ t_list		*ls_lstpushup(t_list *lst, t_list *temp)
 		return (0);
 }
 
-t_list		*ls_lstalphsort(t_list *lst)
-{
-	t_list	*temp;
-	t_list	*head;
-
-	temp = lst;
-	while (lst != 0)
-	{
-		if (ft_strcmp(temp->name, lst->name) > 0)
-			temp = ls_lstpushup(lst, temp);
-		lst = lst->next;
-	}
-	head = temp;
-	while ((temp = temp->next) != 0)
-	{
-		lst = temp;
-		while (lst != 0)
-		{
-			if (ft_strcmp(temp->name, lst->name) > 0)
-				temp = ls_lstpushup(lst, temp);
-			lst = lst->next;
-		}
-	}
-//	ls_lstprint(temp);
-	return (head);
-}
-
-void		ls_lstbubsort(t_list **lst_m)
+t_list		*ls_lstbubsort(t_list **lst_m)
 {
 	t_list	*temp_c;
 	t_list	*lst;
@@ -110,16 +81,17 @@ void		ls_lstbubsort(t_list **lst_m)
 	{
 		while (i < n && lst->next != 0)
 		{
-			lst = lst->next;
 			if (ft_strcmp(lst->name, lst->next->name) < 0)
 				ls_lstswap(&lst, lst->next, lst_m);
+			else
+				lst = lst->next;
 			i++;
 		}
 		lst = *lst_m;
 		n--;
 		i = 1;
 	}
-	ls_lstprint(*lst_m);
+	return (*lst_m);
 }
 
 
