@@ -6,17 +6,15 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/16 19:32:33 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/19 12:56:08 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int			recursive_dir_scan(char **argv);
-
-int			ft_memarrchr(char *arr, char *arr2)
+int				ft_memarrchr(char *arr, char *arr2)
 {
-	int		x;
+	int			x;
 
 	x = 1;
 	while (arr2[x] != 0)
@@ -28,9 +26,9 @@ int			ft_memarrchr(char *arr, char *arr2)
 	return (1);
 }
 
-void		flag_strct(char *arr, t_flags *flg)
+void			flag_strct(char *arr, t_flags *flg)
 {
-	int		x;
+	int			x;
 
 	x = 1;
 	while ((int)ft_strlen(arr) > x)
@@ -48,10 +46,10 @@ void		flag_strct(char *arr, t_flags *flg)
 	}
 }
 
-int			flags_parser(int argc, char **argv, t_flags *flg)
+int				flags_parser(int argc, char **argv, t_flags *flg)
 {
-	int		y;
-	char	*flags;
+	int			y;
+	char		*flags;
 
 	y = 1;
 	flags = ft_memalloc(10);
@@ -67,31 +65,28 @@ int			flags_parser(int argc, char **argv, t_flags *flg)
 	return (1);
 }
 
-void		path_parser(int	argc, char **argv, t_flags *flg)
+void			path_parser(int	argc, char **argv, t_flags *flg)
 {
-	int		y;
-	int		x;
+	int			y;
+	int			x;
 
 	x = 0;
 	y = 1;
 	while (argv[y] != 0 && argv[y][0] == '-' && argv[y][1] != '-')
 		y++;
-	if (argv[y][0] == '-' && argv[y][1] == '-')
+	if (argc > y && argv[y][0] == '-' && argv[y][1] == '-')
 		y += 3;
-	if (argc == y)
-		flg->path = ft_memalloc(1);
-	else
+	flg->path = ft_memalloc((argc - y + 1) * 8);
+	argc == y ? flg->path[x] = ft_memalloc(2) : 0;
+	argc == y ? ft_strcpy(flg->path[x], ".") : 0;
+	while (argv[y] != 0)
 	{
-		flg->path = ft_memalloc((argc - y + 1) * 8);
-		while (argv[y] != 0)
-		{
-			flg->path[x] = ft_memalloc(ft_strlen(argv[y]) + 1);
-			ft_strcpy(flg->path[x], argv[y]);
-			x++;
-			y++;
-		}
-		flg->path[x] = ft_memalloc(1);
+		flg->path[x] = ft_memalloc(ft_strlen(argv[y]) + 1);
+		ft_strcpy(flg->path[x], argv[y]);
+		x++;
+		y++;
 	}
+	flg->path[x] = ft_memalloc(1);
 }
 
 int				main(int argc, char **argv)
@@ -105,6 +100,7 @@ int				main(int argc, char **argv)
 	{
 		flags_parser(argc, argv, flg);
 		path_parser(argc, argv, flg);
+		main_conv(flg);
 	} 
 	free(flg);
 	return (0);

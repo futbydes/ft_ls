@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/16 19:56:14 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/23 16:48:08 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ typedef struct s_flags {
 	char	**path;
 }			t_flags;
 
-typedef struct s_list {
-	char	*name;
-	void	*next;
-}				t_list;
+typedef struct			s_list 
+{
+	char				*name;
+	unsigned short		st_mode;
+	struct s_list		*next;
+}						t_list;
 
 void		*ft_memalloc(size_t size);
 void		*ft_memchr(const void *s, int c, size_t n);
@@ -50,6 +52,15 @@ void		path_parser(int	argc, char **argv, t_flags *flg);
 void		flag_strct(char *arr, t_flags *flg);
 int			ft_memarrchr(char *arr, char *arr2);
 int			scan_dir(char *arg, t_flags *flg);
+void		main_conv(t_flags *flg);
+void		recursive_dir_scan(char *path, t_flags *flg);
+void		ls_lstprint(t_list *head);
+t_list      *ls_lstalphsort(t_list *head);
+t_list      *ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg);
+t_list		*ls_lstsort(t_list *head, t_flags *flg);
+void		ls_lstbubsort(t_list **lst_m);
+void		ls_lstswap(t_list **lst, t_list *swp, t_list **head);
+t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 
 //err_usage;
 //err_nsf;
