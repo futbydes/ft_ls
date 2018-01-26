@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/23 17:53:06 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/26 12:14:26 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 		buf = ft_memalloc(sizeof(buf));
 		stat(dien->d_name, buf);
 		head = ls_lstnew(head, dien->d_name, buf, flg);
-	printf(":::nextfile::::%s\n", head->name);
+	//printf(":::nextfile::::%s\n", head->name);
 	}
 	head = ls_lstsort(head, flg);
 	ls_lstprint(head);
@@ -83,8 +83,7 @@ int			scan_dir(char *arg, t_flags *flg)
 			head = ls_lstnew(head, dien->d_name, buf, flg);
 		}
 	}
-	ls_lstbubsort(&head);
-	ls_lstprint(head);
+	ls_lstsort(head,flg);
 	return (1);
 }
 
