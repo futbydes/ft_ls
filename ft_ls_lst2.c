@@ -6,33 +6,38 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 16:19:12 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/26 13:02:22 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 14:38:24 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void			ls_lstswap(t_list **lst, t_list *swp, t_list **head)
+void		ft_lstswap(t_list **head, t_list **swp)
 {
-	t_list		*temp;
-	t_list		*temp2;
+	t_list	*next;
+	t_list	*prev;
+	t_list	*root;
 
-	if (lst == head)
+	prev = 0;
+	root = *head;
+	while ((*head) != (*swp))
 	{
-		(*lst)->next = (*lst)->next->next;
-		swp->next = (*lst);
-		(*lst) = swp;
-		head = lst;
+		prev = (*head);
+		(*head) = (*head)->next;
 	}
-	else
+	if ((*head) == (*swp))
 	{
-		temp = *head;
-		temp2 = (*lst)->next->next;
-		while (temp->next != (*lst))
-			temp = temp->next;
-		temp->next = swp;
-		swp->next = *lst;
-		(*lst)->next = temp2;
+		next = (*swp)->next;
+		(*swp)->next = (*swp)->next->next;
+		next->next = (*swp);
+		if (prev != 0)
+		{
+			prev->next = next;
+			(*head) = root;
+		}
+		else
+			(*head) = next;
+		(*swp) = next;
 	}
 }
 

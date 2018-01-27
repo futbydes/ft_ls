@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/26 13:03:31 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 14:36:03 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,6 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 		ls_lstrev(&sort);
 	ls_lstprint(sort);
 	return (sort);
-	/*
-	if (flg->l)
-	if (flg->t || flg->u)
-		;
-	if (flg->r)
-		; */
 }
 
 t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg)
@@ -42,9 +36,6 @@ t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg)
 	lst->next = head;
 	if (flg->R == 1)
 		;
-/*	lst->
-	if (stat != 0)
-		; */
 	return (lst);
 }
 /*
@@ -78,14 +69,13 @@ t_list		*ls_lstbubsort_alpha(t_list **lst_m)
 	lst = *lst_m;
 	while ((temp_c = temp_c->next) != 0)
 		n++;
-	while (i < n)
+	while (i < n && lst->next != 0 && (*lst_m)->next != 0)
 	{
 		while (i < n && lst->next != 0)
 		{
 			if (ft_strcmp(lst->name, lst->next->name) < 0)
-				ls_lstswap(&lst, lst->next, lst_m);
-			else
-				lst = lst->next;
+				ft_lstswap(lst_m , &lst);
+			lst = lst->next;
 			i++;
 		}
 		lst = *lst_m;

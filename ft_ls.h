@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/26 12:15:12 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 14:38:26 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void		ls_lstprint(t_list *head);
 t_list      *ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg);
 t_list		*ls_lstsort(t_list *head, t_flags *flg);
 t_list		*ls_lstbubsort_alpha(t_list **lst_m);
-void		ls_lstswap(t_list **lst, t_list *swp, t_list **head);
+void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/26 12:14:26 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 15:16:44 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,31 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 	struct dirent	*dien;
 	struct stat		*buf;
 	t_list			*head;
+	t_list			*temp;
 
 	head = 0;
+	buf = 0;
 	if (!(dir = opendir(path)))
 		return ;
 	while ((dien = readdir(dir)) != 0)
 	{
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
 			continue ;
-		buf = ft_memalloc(sizeof(buf));
+		buf = ft_memalloc(sizeof(struct stat));
 		stat(dien->d_name, buf);
 		head = ls_lstnew(head, dien->d_name, buf, flg);
-	//printf(":::nextfile::::%s\n", head->name);
 	}
 	head = ls_lstsort(head, flg);
-	ls_lstprint(head);
-	while (head->next != 0)
+	temp = head;
+	while (temp != 0)
 	{
-		printf("%hu\n", head->st_mode);
-		if (head->st_mode == 16877)
+	//	printf(":::%s:::%hu::::\n", temp->name, temp->st_mode);
+		if (S_ISDIR(temp->st_mode))
 		{
-			printf("\n::::::%s\n\n", head->name);
-			recursive_dir_scan(head->name, flg);
+			printf("\n:::::%s:::::%hu::::\n", temp->name, temp->st_mode);
+			recursive_dir_scan(temp->name, flg);
 		}
-		head = head->next;
+		temp = temp->next;
 	}
 }
 
