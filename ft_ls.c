@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/19 12:56:08 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 19:05:44 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void			path_parser(int	argc, char **argv, t_flags *flg)
 		x++;
 		y++;
 	}
-	flg->path[x] = ft_memalloc(1);
+	flg->path[(x == 0 ? 1 : x)] = ft_memalloc(1);
 }
 
 int				main(int argc, char **argv)

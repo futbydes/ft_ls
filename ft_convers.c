@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/27 15:16:44 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 19:05:43 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,33 @@
 
 void				recursive_dir_scan(char *path, t_flags *flg)
 {
-	DIR				*dir;
-	struct dirent	*dien;
-	struct stat		*buf;
 	t_list			*head;
 	t_list			*temp;
 
-	head = 0;
-	buf = 0;
-	if (!(dir = opendir(path)))
-		return ;
-	while ((dien = readdir(dir)) != 0)
-	{
-		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
-			continue ;
-		buf = ft_memalloc(sizeof(struct stat));
-		stat(dien->d_name, buf);
-		head = ls_lstnew(head, dien->d_name, buf, flg);
-	}
-	head = ls_lstsort(head, flg);
+	head = scan_dir(path,flg);
 	temp = head;
 	while (temp != 0)
 	{
-	//	printf(":::%s:::%hu::::\n", temp->name, temp->st_mode);
 		if (S_ISDIR(temp->st_mode))
 		{
-			printf("\n:::::%s:::::%hu::::\n", temp->name, temp->st_mode);
+			printf("\n:::::%s\n", temp->name);
+//			path = ls_pathmaker(flg, temp->name); 
 			recursive_dir_scan(temp->name, flg);
 		}
 		temp = temp->next;
 	}
+	free(head);
 }
 
-void	main_conv(t_flags *flg)
+void				main_conv(t_flags *flg)
 {
 	if (flg->R == 1)
-		recursive_dir_scan(".", flg);
+	{
+		ls_pathmaker(flg, 0);
+		recursive_dir_scan(*(*flg).path, flg);
+	}
+	else
+		scan_dir(*(*flg).path, flg);
 /*	if (flg->path == 0)
 		scan_dir(".", flags);
 	if (flg->d == 1) //tol'ko pokazivat' put' fayla i ispol'zovat' ego dlya inf
@@ -60,13 +51,12 @@ void	main_conv(t_flags *flg)
 		; */
 }
 
-int			scan_dir(char *arg, t_flags *flg)
+t_list				*scan_dir(char *arg, t_flags *flg)
 {
-	DIR 	*dir;
-	struct	dirent *dien;
+	DIR 			*dir;
+	struct dirent	*dien;
 	struct stat		*buf;
-	t_list	*head;
-
+	t_list			*head;
 
 	head = 0;
 	if (!(dir = opendir(arg)))
@@ -75,16 +65,40 @@ int			scan_dir(char *arg, t_flags *flg)
 	{
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
 			continue ;
-		if (flg->f == 1 && (flg->l == 0 || flg->a == 0)) //more condition?
-			printf("%s\n", dien->d_name);
-		else
-		{
-			buf = ft_memalloc(sizeof(buf));
-			stat(dien->d_name, buf);
-			head = ls_lstnew(head, dien->d_name, buf, flg);
-		}
+		buf = ft_memalloc(sizeof(struct stat));
+		if (stat(dien->d_name, buf) < 0)
+			perror("Error: ");
+		head = ls_lstnew(head, dien->d_name, buf, flg);
+		free(buf);
 	}
-	ls_lstsort(head,flg);
-	return (1);
+	closedir(dir);
+	head = ls_lstsort(head,flg);
+	ls_lstprint(head);
+	return (head);
 }
 
+char			*ls_pathmaker(t_flags *flg, char *path)
+{
+	int			x;
+	char		t[2];
+	char		*temp;
+
+	ft_strcpy(t, "/");
+	x = 0;
+	if (path == 0)
+	{
+		while (flg->path[x][0] != 0)
+		{
+			temp = ft_strjoin(flg->path[x], t);
+			free(flg->path[x]);
+			flg->path[x] = temp;
+			x++;
+		}
+	}
+	else
+	{
+		temp = ft_strjoin(temp, path);
+		temp = ft_strjoin(temp, t);
+	}
+	return (temp);
+}

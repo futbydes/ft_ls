@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/27 14:38:26 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/27 19:05:48 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ char		*ft_strcpy(char *dst, const char *src);
 char		*ft_strrchr(const char *s, int c);
 size_t		ft_strlen(const char *s);
 int			ft_strcmp(const char *s1, const char *s2);
+char		*ft_strjoin(char const *s1, char const *s2);
 int			flags_parser(int argc, char **argv, t_flags *flg);
 void		path_parser(int	argc, char **argv, t_flags *flg);
 void		flag_strct(char *arr, t_flags *flg);
 int			ft_memarrchr(char *arr, char *arr2);
-int			scan_dir(char *arg, t_flags *flg);
+t_list		*scan_dir(char *arg, t_flags *flg);
 void		main_conv(t_flags *flg);
 void		recursive_dir_scan(char *path, t_flags *flg);
 void		ls_lstprint(t_list *head);
@@ -61,6 +62,7 @@ t_list		*ls_lstbubsort_alpha(t_list **lst_m);
 void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
+char		*ls_pathmaker(t_flags *flg, char *path);
 
 
 //err_usage;
