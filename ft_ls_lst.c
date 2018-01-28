@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/27 19:05:47 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/28 12:34:29 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg)
 
 	lst = ft_memalloc(sizeof(t_list));
 	lst->name = ft_memalloc((int)ft_strlen(name) + 1);
-	name = ls_pathmaker(flg, name);
 	ft_strcpy(lst->name, name);
 	lst->st_mode = stat->st_mode;
 	lst->next = head;
@@ -96,4 +95,3 @@ void			ls_lstprint(t_list *head)
 		head = head->next;
 	}
 }
-

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/27 19:05:48 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/28 11:47:34 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_list		*ls_lstbubsort_alpha(t_list **lst_m);
 void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
-char		*ls_pathmaker(t_flags *flg, char *path);
+char		*ls_pathmaker(char *path, char *new_fld);
 
 
 //err_usage;
