@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/28 12:50:58 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/28 13:12:26 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 
 void				main_conv(t_flags *flg)
 {
+	if (flg->d == 1)
+		;//pokazivat' katalog kak obicniy fayl no s sohraneniem infy ot "l" k primeru
 	if (flg->R == 1)
 		recursive_dir_scan(*(*flg).path, flg);
 	else

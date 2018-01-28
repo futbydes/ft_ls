@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/28 11:47:34 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/28 15:39:33 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@
 # include <stdlib.h> //exit
 # include <unistd.h> //statlstat
 # include <sys/types.h> //getpwuid
+# include <pwd.h>
+# include <grp.h>
 # include <sys/stat.h>
 # include <stdio.h> //perror
-# include <string.h> //strerror
+# include <string.h> //strerrori
+# include <time.h> //time, ctime
 
 typedef struct s_flags {
 	char	R;
@@ -37,7 +40,13 @@ typedef struct s_flags {
 typedef struct			s_list 
 {
 	char				*name;
+	char				*u_name;
+	char				*gr_name;
 	unsigned short		st_mode;
+	long int			time;
+	char				*f_rights;
+	int					n_link;
+	long long int		f_size;
 	struct s_list		*next;
 }						t_list;
 
@@ -63,6 +72,7 @@ void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 char		*ls_pathmaker(char *path, char *new_fld);
+void		ls_fdata(t_list *lst, struct stat *stat, t_flags *flg);
 
 
 //err_usage;

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/28 12:34:29 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/28 15:51:46 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 	return (sort);
 }
 
-t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg)
+t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat,
+		t_flags *flg)
 {
 	t_list	*lst;
 
@@ -33,9 +34,41 @@ t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat, t_flags *flg)
 	ft_strcpy(lst->name, name);
 	lst->st_mode = stat->st_mode;
 	lst->next = head;
+	lst->time = (flg->u == 1 ? stat->st_atime : stat->st_mtime);
+	(flg->l == 1 || flg->g == 1) ? ls_fdata(lst, stat, flg) : 0;
+//	printf("%s\n", ctime(&lst->time));
 	if (flg->R == 1)
 		;
 	return (lst);
+}
+
+void			ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
+{
+	struct	passwd *passwd;
+	struct	group *group;
+
+	lst->f_rights = ft_memalloc(11);
+	lst->f_rights[0] = (S_ISDIR(stat->st_mode) ? 'd' : '-');
+	lst->f_rights[0] = (S_ISLNK(stat->st_mode) ? 'l' : '-');
+	lst->f_rights[1] = ((stat->st_mode & S_IRUSR) ? 'r' : '-');
+	lst->f_rights[2] = ((stat->st_mode & S_IWUSR) ? 'w' : '-');
+	lst->f_rights[3] = ((stat->st_mode & S_IXUSR) ? 'x' : '-');
+	lst->f_rights[4] = ((stat->st_mode & S_IRGRP) ? 'r' : '-');
+	lst->f_rights[5] = ((stat->st_mode & S_IWGRP) ? 'w' : '-');
+	lst->f_rights[6] = ((stat->st_mode & S_IXGRP) ? 'x' : '-');
+	lst->f_rights[7] = ((stat->st_mode & S_IROTH) ? 'r' : '-');
+	lst->f_rights[8] = ((stat->st_mode & S_IWOTH) ? 'w' : '-');
+	lst->f_rights[9] = ((stat->st_mode & S_IXOTH) ? 'x' : '-');
+	lst->n_link = stat->st_nlink;
+	lst->f_size = stat->st_size;
+	passwd = getpwuid(stat->st_uid);
+	lst->u_name = ft_memalloc(ft_strlen(passwd->pw_name) + 1);
+	lst->u_name = ft_strcpy(lst->u_name, passwd->pw_name);
+	group = getgrgid(stat->st_gid);
+	lst->gr_name = ft_memalloc(ft_strlen(group->gr_name) + 1);
+	lst->gr_name = ft_strcpy(lst->gr_name, group->gr_name);
+	if (flg->R == 1)
+		;
 }
 /*
 t_list		*ls_lstpushup(t_list *lst, t_list *temp)
