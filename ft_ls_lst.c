@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/28 15:51:46 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/30 18:50:52 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 }
 
 t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat,
-		t_flags *flg)
+		t_flags *flg, char *path)
 {
 	t_list	*lst;
 
@@ -35,21 +35,29 @@ t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat,
 	lst->st_mode = stat->st_mode;
 	lst->next = head;
 	lst->time = (flg->u == 1 ? stat->st_atime : stat->st_mtime);
-	(flg->l == 1 || flg->g == 1) ? ls_fdata(lst, stat, flg) : 0;
-//	printf("%s\n", ctime(&lst->time));
-	if (flg->R == 1)
-		;
+	if (flg->l == 1 || flg->g == 1)
+	{
+		ls_fdata(lst, stat, flg, path);
+	//maxsize;
+	flg->maxlink < lst->n_link ? flg->maxlink = lst->n_link : 0;
+	flg->maxsize < lst->f_size ? flg->maxsize = lst->f_size : 0;
+	flg->maxblock < lst->b_size ? flg->maxblock = lst->b_size : 0;
+	flg->totalblock += lst->b_size;
+	}
 	return (lst);
 }
 
-void			ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
+void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg,
+		char *path)
 {
-	struct	passwd *passwd;
-	struct	group *group;
+	struct passwd	*passwd;
+	struct group	*group;
 
-	lst->f_rights = ft_memalloc(11);
+	lst->f_rights = ft_memalloc(12);
 	lst->f_rights[0] = (S_ISDIR(stat->st_mode) ? 'd' : '-');
-	lst->f_rights[0] = (S_ISLNK(stat->st_mode) ? 'l' : '-');
+	S_ISLNK(stat->st_mode) ? lst->f_rights[0] = 'l' : 0;
+	S_ISCHR(stat->st_mode) ? lst->f_rights[0] = 'c' : 0;
+	S_ISBLK(stat->st_mode) ? lst->f_rights[0] = 'b' : 0;
 	lst->f_rights[1] = ((stat->st_mode & S_IRUSR) ? 'r' : '-');
 	lst->f_rights[2] = ((stat->st_mode & S_IWUSR) ? 'w' : '-');
 	lst->f_rights[3] = ((stat->st_mode & S_IXUSR) ? 'x' : '-');
@@ -59,6 +67,9 @@ void			ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
 	lst->f_rights[7] = ((stat->st_mode & S_IROTH) ? 'r' : '-');
 	lst->f_rights[8] = ((stat->st_mode & S_IWOTH) ? 'w' : '-');
 	lst->f_rights[9] = ((stat->st_mode & S_IXOTH) ? 'x' : '-');
+	(S_ISVTX & stat->st_mode) ? lst->f_rights[9] = 't' : '-';
+
+	ls_xattributes(lst, path);
 	lst->n_link = stat->st_nlink;
 	lst->f_size = stat->st_size;
 	passwd = getpwuid(stat->st_uid);
@@ -67,6 +78,7 @@ void			ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
 	group = getgrgid(stat->st_gid);
 	lst->gr_name = ft_memalloc(ft_strlen(group->gr_name) + 1);
 	lst->gr_name = ft_strcpy(lst->gr_name, group->gr_name);
+	lst->b_size = stat->st_blocks;
 	if (flg->R == 1)
 		;
 }
@@ -120,11 +132,43 @@ t_list		*ls_lstbubsort_alpha(t_list **lst_m)
 	return (*lst_m);
 }
 
-void			ls_lstprint(t_list *head)
+void			ls_lstprint(t_list *lst,t_flags *flg, char *path)
 {
-	while (head != 0)
+	char	*time;
+	char	*buf;
+
+	buf = ft_memalloc(255);
+	(flg->l || flg->g) ? printf("total %d\n", flg->totalblock) : 0;
+	while (lst != 0)
 	{
-		printf("%s\n", head->name);
-		head = head->next;
+		if (flg->l == 1 || flg->g == 1)
+		{
+			flg->s == 1 ? printf("%*ld ", ((int)ft_intlen(flg->maxblock)),
+					lst->b_size) : 0;
+			printf("%-*s", ((int)ft_strlen(lst->f_rights)), lst->f_rights);
+			printf("%*d ", (ft_intlen(flg->maxlink) + 1), lst->n_link);
+			flg->g != 1 ? printf("%-*s ", ((int)ft_strlen(lst->u_name) + 1),
+					lst->u_name) : 0;
+			printf("%-*s ", ((int)ft_strlen(lst->gr_name) + 1), lst->gr_name);
+			printf("%*lld ", (ft_intlen(flg->maxsize)), lst->f_size);
+			time = ctime(&lst->time);
+			time = ls_time(time);
+			printf("%-*s", ((int)ft_strlen(time) + 1), time);
+			free(time);
+		}
+		printf("%s", lst->name);
+		if (S_ISLNK(lst->st_mode))
+		{
+			readlink(ls_pathmaker(path, lst->name), buf, 255);
+			printf(" -> %s", buf);
+		}
+		printf("\n");
+		lst = lst->next;
 	}
+
+		//maxsizes to 0
+		flg->maxlink = 0;
+		flg->maxsize = 0;
+		flg->maxblock = 0;
+		flg->totalblock = 0;
 }

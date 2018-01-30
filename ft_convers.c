@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/28 13:12:26 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/30 18:45:51 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 	{
 		if (S_ISDIR(temp->st_mode))
 		{
-			printf("\n%s:\n", ls_pathmaker(path,temp->name));
 			cur_path = ls_pathmaker(path, temp->name);
+			printf("\n%s:\n", cur_path);
 			recursive_dir_scan(cur_path, flg);
 		}
 		temp = temp->next;
@@ -66,15 +66,15 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
 			continue ;
 		buf = ft_memalloc(sizeof(struct stat));
-		if (stat((ft_strcmp(arg, ".") ? ls_pathmaker(arg, dien->d_name)
+		if (lstat((ft_strcmp(arg, ".") ? ls_pathmaker(arg, dien->d_name)
 						: dien->d_name), buf) < 0)
 			perror("Error: ");
-		head = ls_lstnew(head, dien->d_name, buf, flg);
+		head = ls_lstnew(head, dien->d_name, buf, flg, arg);
 		free(buf);
 	}
 	closedir(dir);
 	head = ls_lstsort(head,flg);
-	ls_lstprint(head);
+	ls_lstprint(head, flg, arg);
 	return (head);
 }
 
