@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/30 18:45:18 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/31 21:13:43 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct 	s_flags
 	long int	maxblock;
 	int			totalblock;
 	char		**path;
+	char		*path_in;
 }				t_flags;
 
 typedef struct			s_list 
@@ -49,6 +50,8 @@ typedef struct			s_list
 	char				*name;
 	char				*u_name;
 	char				*gr_name;
+	unsigned int		major;
+	unsigned int		minor;
 	unsigned short		st_mode;
 	long int			time;
 	long int			b_size;
@@ -75,17 +78,18 @@ void		main_conv(t_flags *flg);
 void		recursive_dir_scan(char *path, t_flags *flg);
 void		ls_lstprint(t_list *head,t_flags *flg, char *path);
 t_list      *ls_lstnew(t_list *head, char *name, struct stat *stat,
-		t_flags *flg, char *path);
+		t_flags *flg);
 t_list		*ls_lstsort(t_list *head, t_flags *flg);
-t_list		*ls_lstbubsort_alpha(t_list **lst_m);
+t_list		*ls_lstbubsort(t_list **lst_m, int mode);
 void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 char		*ls_pathmaker(char *path, char *new_fld);
 void		ls_xattributes(t_list *lst, char *path);
-void		ls_fdata(t_list *lst, struct stat *stat, t_flags *flg, char *path);
+void		ls_fdata(t_list *lst, struct stat *stat, t_flags *flg);
 int			ft_intlen(intmax_t i);
 char		*ls_time(char *time);
+void		ls_d_conv(char *path, t_flags *flg);
 
 //err_usage;
 //err_nsf;

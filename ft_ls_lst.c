@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/30 18:50:52 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/31 21:27:32 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,20 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 	t_list		*sort;
 
 	sort = 0;
-	if (flg->f != 1)
-		sort = ls_lstbubsort_alpha(&head);
-	if (flg->r != 1)
+	if (flg->f == 1)
+		sort = head;
+	else
+		sort = ls_lstbubsort(&head, 0);
+	if (flg->t == 1 && flg->f != 1)
+		sort = ls_lstbubsort(&head, 1);
+	ls_lstrev(&sort);
+	if (flg->r == 1 && flg->f != 1)
 		ls_lstrev(&sort);
 	return (sort);
 }
 
 t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat,
-		t_flags *flg, char *path)
+		t_flags *flg)
 {
 	t_list	*lst;
 
@@ -37,22 +42,22 @@ t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat,
 	lst->time = (flg->u == 1 ? stat->st_atime : stat->st_mtime);
 	if (flg->l == 1 || flg->g == 1)
 	{
-		ls_fdata(lst, stat, flg, path);
+		ls_fdata(lst, stat, flg);
 	//maxsize;
-	flg->maxlink < lst->n_link ? flg->maxlink = lst->n_link : 0;
-	flg->maxsize < lst->f_size ? flg->maxsize = lst->f_size : 0;
-	flg->maxblock < lst->b_size ? flg->maxblock = lst->b_size : 0;
-	flg->totalblock += lst->b_size;
+		flg->maxlink < lst->n_link ? flg->maxlink = lst->n_link : 0;
+		flg->maxsize < lst->f_size ? flg->maxsize = lst->f_size : 0;
+		flg->maxblock < lst->b_size ? flg->maxblock = lst->b_size : 0;
+		flg->totalblock += lst->b_size;
 	}
 	return (lst);
 }
 
-void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg,
-		char *path)
+void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
 {
 	struct passwd	*passwd;
 	struct group	*group;
 
+	//f_rights data
 	lst->f_rights = ft_memalloc(12);
 	lst->f_rights[0] = (S_ISDIR(stat->st_mode) ? 'd' : '-');
 	S_ISLNK(stat->st_mode) ? lst->f_rights[0] = 'l' : 0;
@@ -69,7 +74,7 @@ void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg,
 	lst->f_rights[9] = ((stat->st_mode & S_IXOTH) ? 'x' : '-');
 	(S_ISVTX & stat->st_mode) ? lst->f_rights[9] = 't' : '-';
 
-	ls_xattributes(lst, path);
+	ls_xattributes(lst, flg->path_in);
 	lst->n_link = stat->st_nlink;
 	lst->f_size = stat->st_size;
 	passwd = getpwuid(stat->st_uid);
@@ -79,48 +84,33 @@ void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg,
 	lst->gr_name = ft_memalloc(ft_strlen(group->gr_name) + 1);
 	lst->gr_name = ft_strcpy(lst->gr_name, group->gr_name);
 	lst->b_size = stat->st_blocks;
-	if (flg->R == 1)
-		;
-}
-/*
-t_list		*ls_lstpushup(t_list *lst, t_list *temp)
-{
-	t_list	*head;
 
-	if (lst != 0 && temp != 0)
+	if (S_ISCHR(stat->st_mode) || S_ISBLK(stat->st_mode))
 	{
-		head = temp;
-		while (temp->next != lst && temp->next != 0)
-			temp = temp->next;
-		temp->next = temp->next->next;
-		lst->next = head;
-		return (lst);
+		lst->major = major(stat->st_dev);
+		lst->minor = minor(stat->st_dev);
 	}
-	else
-		return (0);
 }
-*/
-t_list		*ls_lstbubsort_alpha(t_list **lst_m)
+
+t_list		*ls_lstbubsort(t_list **lst_m, int mode)
 {
-	t_list	*temp_c;
 	t_list	*lst;
 	int		n;
 	int		i;
 
 	i = 1;
 	n = 1;
-	temp_c = *lst_m;
 	lst = *lst_m;
-	while (temp_c != 0)
-	{
-		n++;
-		temp_c = temp_c->next;
-	}
+	while (lst != 0 && n++)
+		lst = lst->next;
+	lst = *lst_m;
 	while (i < n && lst->next != 0 && (*lst_m)->next != 0)
 	{
 		while (i < n && lst->next != 0)
 		{
-			if (ft_strcmp(lst->name, lst->next->name) < 0)
+			if (mode == 0 && ft_strcmp(lst->name, lst->next->name) < 0)
+				ft_lstswap(lst_m , &lst);
+			else if (mode == 1 && lst->time > lst->next->time)
 				ft_lstswap(lst_m , &lst);
 			lst = lst->next;
 			i++;
@@ -138,7 +128,7 @@ void			ls_lstprint(t_list *lst,t_flags *flg, char *path)
 	char	*buf;
 
 	buf = ft_memalloc(255);
-	(flg->l || flg->g) ? printf("total %d\n", flg->totalblock) : 0;
+	((flg->l || flg->g) && flg->d != 1) ? printf("total %d\n", flg->totalblock) : 0;
 	while (lst != 0)
 	{
 		if (flg->l == 1 || flg->g == 1)
@@ -150,16 +140,28 @@ void			ls_lstprint(t_list *lst,t_flags *flg, char *path)
 			flg->g != 1 ? printf("%-*s ", ((int)ft_strlen(lst->u_name) + 1),
 					lst->u_name) : 0;
 			printf("%-*s ", ((int)ft_strlen(lst->gr_name) + 1), lst->gr_name);
-			printf("%*lld ", (ft_intlen(flg->maxsize)), lst->f_size);
+
+			if (S_ISCHR(lst->st_mode) || S_ISBLK(lst->st_mode))
+			{
+				printf("%3d ", lst->major);
+				lst->minor > 255 ? printf("%3x ", lst->minor) :
+					printf("%3d ", lst->minor);
+			}
+			else
+				printf("%*lld ", (ft_intlen(flg->maxsize)), lst->f_size);
+
 			time = ctime(&lst->time);
 			time = ls_time(time);
 			printf("%-*s", ((int)ft_strlen(time) + 1), time);
 			free(time);
 		}
 		printf("%s", lst->name);
-		if (S_ISLNK(lst->st_mode))
+		if (S_ISLNK(lst->st_mode) && (flg->l || flg->g))
 		{
-			readlink(ls_pathmaker(path, lst->name), buf, 255);
+			if (flg->d == 1)
+				readlink(path, buf, 255);
+			else
+				readlink(ls_pathmaker(path, lst->name), buf, 255);
 			printf(" -> %s", buf);
 		}
 		printf("\n");

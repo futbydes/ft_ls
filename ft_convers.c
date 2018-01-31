@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/30 18:45:51 by vludan           ###   ########.fr       */
+/*   Updated: 2018/01/31 19:28:52 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 {
 	t_list			*head;
 	t_list			*temp;
-	char			*cur_path;
 
 	head = scan_dir(path,flg);
 	temp = head;
 	while (temp != 0)
 	{
-		if (S_ISDIR(temp->st_mode))
+		if (S_ISDIR(temp->st_mode) && ft_strcmp(temp->name, ".") &&
+				ft_strcmp(temp->name, ".."))
 		{
-			cur_path = ls_pathmaker(path, temp->name);
-			printf("\n%s:\n", cur_path);
-			recursive_dir_scan(cur_path, flg);
+			flg->path_in = ls_pathmaker(path, temp->name);
+			printf("\n%s:\n", flg->path_in);
+			recursive_dir_scan(flg->path_in, flg);
 		}
 		temp = temp->next;
 	}
@@ -36,8 +36,8 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 void				main_conv(t_flags *flg)
 {
 	if (flg->d == 1)
-		;//pokazivat' katalog kak obicniy fayl no s sohraneniem infy ot "l" k primeru
-	if (flg->R == 1)
+		ls_d_conv(*(*flg).path, flg);
+	else if (flg->R == 1 && flg->d != 1)
 		recursive_dir_scan(*(*flg).path, flg);
 	else
 		scan_dir(*(*flg).path, flg);
@@ -66,10 +66,10 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
 			continue ;
 		buf = ft_memalloc(sizeof(struct stat));
-		if (lstat((ft_strcmp(arg, ".") ? ls_pathmaker(arg, dien->d_name)
-						: dien->d_name), buf) < 0)
+		flg->path_in = ls_pathmaker(arg,dien->d_name);
+		if (lstat((ft_strcmp(arg, ".") ? flg->path_in = ls_pathmaker(arg,dien->d_name) : dien->d_name), buf) < 0)
 			perror("Error: ");
-		head = ls_lstnew(head, dien->d_name, buf, flg, arg);
+		head = ls_lstnew(head, dien->d_name, buf, flg);
 		free(buf);
 	}
 	closedir(dir);
