@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/30 14:40:20 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/02 16:38:49 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void			flag_strct(char *arr, t_flags *flg)
 		arr[x] == 'g' ? flg->g = 1 : 0;
 		arr[x] == 'd' ? flg->d = 1 : 0;
 		arr[x] == 's' ? flg->s = 1 : 0;
+		arr[x] == 'T' ? flg->T = 1 : 0;
+		arr[x] == '@' ? flg->ext = 1 : 0;
 		x++;
 	}
 }
@@ -53,8 +55,8 @@ int				flags_parser(int argc, char **argv, t_flags *flg)
 	char		*flags;
 
 	y = 1;
-	flags = ft_memalloc(11);
-	ft_strcpy(flags, "Rlartufgds");
+	flags = ft_memalloc(13);
+	ft_strcpy(flags, "RlartufgdsT@");
 	while (argc > y && argv[y][0] == '-' && argv[y][1] != '-')
 	{
 		if (!(ft_memarrchr(flags, argv[y])))
@@ -104,5 +106,5 @@ int				main(int argc, char **argv)
 		main_conv(flg);
 	} 
 	free(flg);
-	return (0);
+	return (1);
 }

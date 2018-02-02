@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/31 21:13:43 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/02 15:49:10 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ typedef struct 	s_flags
 	char		g;
 	char		d;
 	char		s;
+	char		T;
+	char		ext;
 	int			maxlink;
 	long int	maxsize;
 	long int	maxblock;
@@ -58,6 +60,7 @@ typedef struct			s_list
 	char				*f_rights;
 	int					n_link;
 	long long int		f_size;
+	char				*xattr;
 	struct s_list		*next;
 }						t_list;
 
@@ -85,15 +88,13 @@ void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 char		*ls_pathmaker(char *path, char *new_fld);
-void		ls_xattributes(t_list *lst, char *path);
+void		ls_xattributes(char *path);
 void		ls_fdata(t_list *lst, struct stat *stat, t_flags *flg);
 int			ft_intlen(intmax_t i);
-char		*ls_time(char *time);
+void		ls_time(t_list *lst, t_flags *flg);
 void		ls_d_conv(char *path, t_flags *flg);
 
 //err_usage;
 //err_nsf;
-//std_ls;
-//recursive_dir_scan;
 
 #endif

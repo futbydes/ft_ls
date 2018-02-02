@@ -6,36 +6,58 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:40:10 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/31 20:15:21 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/02 16:29:19 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-char				*ls_time(char *time)
+void				ls_time(t_list *lst, t_flags *flg)
 {
 	char			*temp;
+	char			*f_time;
+	time_t			tloc;
 
-	while (*time != ' ')
-		time++;
-	time++;
-	temp = ft_memalloc(13);
-	temp = ft_strncpy(temp, time, 12);
-	return (temp);
+	tloc = time(&tloc);
+	f_time = ctime(&lst->time);
+	while (*f_time != ' ')
+		f_time++;
+	f_time++;
+	if ((tloc - 15811200) > lst->time)
+	{
+		printf("%.7s ", f_time);
+		f_time += 16;
+		printf("%.4s ", f_time);
+	}
+	else
+	{
+		temp = ft_memalloc(ft_strlen(f_time) + 1);
+		if (flg->T == 1)
+			temp = ft_strncpy(temp, f_time, (ft_strlen(f_time) - 1));
+		else
+			temp = ft_strncpy(temp, f_time, 12);
+		printf("%-*s ", ((int)ft_strlen(temp)), temp);
+		free(temp);
+	}
 }
 
-void				ls_xattributes(t_list *lst, char *path)
+void				ls_xattributes(char *path)
 {
+	int				l_xatr;
 	char			*xattr;
-	char			*buf;
+	char			*temp;
 
 	xattr = ft_memalloc(255);
-	buf = ft_memalloc(255);
-	if (S_ISLNK(lst->st_mode)) //non-realized links xattr
-		readlink(path, buf, 255);
-	lst->f_rights[10] = (listxattr((buf[0] != 0 ? buf : path), xattr, 1024, 0) > 0 ? '@' : ' ');
-	free(xattr);
-	free(buf);
+	temp = xattr;
+	l_xatr = listxattr(path, xattr, 1024, XATTR_NOFOLLOW);
+	while (l_xatr > 0)
+	{
+		printf("%*s \t", ((int)ft_strlen(xattr) + 13), xattr);
+		printf("% ld\n", getxattr(path, xattr, 0, 255, 0, XATTR_NOFOLLOW));
+		l_xatr -= ft_strlen(xattr) + 1;
+		xattr += ft_strlen(xattr) + 1;
+	}
+	free(temp);
 }
 
 void				ls_d_conv(char *path, t_flags *flg)
@@ -44,6 +66,7 @@ void				ls_d_conv(char *path, t_flags *flg)
 	t_list			*lst;
 
 	lst = 0;
+	flg->d = 1;
 	buf = ft_memalloc(sizeof(struct stat));
 	if (lstat(path, buf) < 0)
 		perror("Error: ");

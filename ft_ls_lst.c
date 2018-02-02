@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/31 21:27:32 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/02 16:31:10 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
 	lst->f_rights[8] = ((stat->st_mode & S_IWOTH) ? 'w' : '-');
 	lst->f_rights[9] = ((stat->st_mode & S_IXOTH) ? 'x' : '-');
 	(S_ISVTX & stat->st_mode) ? lst->f_rights[9] = 't' : '-';
+	lst->f_rights[10] = (listxattr(flg->path_in, 0, 1024, XATTR_NOFOLLOW) ? '@' : ' ');
 
-	ls_xattributes(lst, flg->path_in);
 	lst->n_link = stat->st_nlink;
 	lst->f_size = stat->st_size;
 	passwd = getpwuid(stat->st_uid);
@@ -87,8 +87,8 @@ void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
 
 	if (S_ISCHR(stat->st_mode) || S_ISBLK(stat->st_mode))
 	{
-		lst->major = major(stat->st_dev);
-		lst->minor = minor(stat->st_dev);
+		lst->major = major(stat->st_rdev);
+		lst->minor = minor(stat->st_rdev);
 	}
 }
 
@@ -99,12 +99,12 @@ t_list		*ls_lstbubsort(t_list **lst_m, int mode)
 	int		i;
 
 	i = 1;
-	n = 1;
+	n = 2;
 	lst = *lst_m;
 	while (lst != 0 && n++)
 		lst = lst->next;
 	lst = *lst_m;
-	while (i < n && lst->next != 0 && (*lst_m)->next != 0)
+	while (n-- && i < n && lst->next != 0 && (*lst_m)->next != 0)
 	{
 		while (i < n && lst->next != 0)
 		{
@@ -116,7 +116,6 @@ t_list		*ls_lstbubsort(t_list **lst_m, int mode)
 			i++;
 		}
 		lst = *lst_m;
-		n--;
 		i = 1;
 	}
 	return (*lst_m);
@@ -124,11 +123,11 @@ t_list		*ls_lstbubsort(t_list **lst_m, int mode)
 
 void			ls_lstprint(t_list *lst,t_flags *flg, char *path)
 {
-	char	*time;
 	char	*buf;
 
 	buf = ft_memalloc(255);
-	((flg->l || flg->g) && flg->d != 1) ? printf("total %d\n", flg->totalblock) : 0;
+	(flg->l || flg->g) && flg->d != 1 && lst != 0 ? 
+		printf("total %d\n", flg->totalblock) : 0;
 	while (lst != 0)
 	{
 		if (flg->l == 1 || flg->g == 1)
@@ -143,17 +142,13 @@ void			ls_lstprint(t_list *lst,t_flags *flg, char *path)
 
 			if (S_ISCHR(lst->st_mode) || S_ISBLK(lst->st_mode))
 			{
-				printf("%3d ", lst->major);
+				printf("%3d, ", lst->major);
 				lst->minor > 255 ? printf("%3x ", lst->minor) :
 					printf("%3d ", lst->minor);
 			}
 			else
 				printf("%*lld ", (ft_intlen(flg->maxsize)), lst->f_size);
-
-			time = ctime(&lst->time);
-			time = ls_time(time);
-			printf("%-*s", ((int)ft_strlen(time) + 1), time);
-			free(time);
+			ls_time(lst, flg);
 		}
 		printf("%s", lst->name);
 		if (S_ISLNK(lst->st_mode) && (flg->l || flg->g))
@@ -165,9 +160,10 @@ void			ls_lstprint(t_list *lst,t_flags *flg, char *path)
 			printf(" -> %s", buf);
 		}
 		printf("\n");
+		if (flg->ext == 1)
+			ls_xattributes(ls_pathmaker(path, lst->name));
 		lst = lst->next;
 	}
-
 		//maxsizes to 0
 		flg->maxlink = 0;
 		flg->maxsize = 0;

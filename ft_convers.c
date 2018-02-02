@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/31 19:28:52 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/02 11:05:45 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,11 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 
 void				main_conv(t_flags *flg)
 {
-	if (flg->d == 1)
+	struct stat 	*buf;
+
+	buf = ft_memalloc(sizeof(struct stat));
+	lstat(*(*flg).path, buf);
+	if (flg->d == 1 || S_ISLNK(buf->st_mode))
 		ls_d_conv(*(*flg).path, flg);
 	else if (flg->R == 1 && flg->d != 1)
 		recursive_dir_scan(*(*flg).path, flg);
@@ -67,7 +71,8 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 			continue ;
 		buf = ft_memalloc(sizeof(struct stat));
 		flg->path_in = ls_pathmaker(arg,dien->d_name);
-		if (lstat((ft_strcmp(arg, ".") ? flg->path_in = ls_pathmaker(arg,dien->d_name) : dien->d_name), buf) < 0)
+		if (lstat((ft_strcmp(arg, ".") ? flg->path_in = ls_pathmaker(arg,
+							dien->d_name) : dien->d_name), buf) < 0)
 			perror("Error: ");
 		head = ls_lstnew(head, dien->d_name, buf, flg);
 		free(buf);
