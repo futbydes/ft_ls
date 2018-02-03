@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_intlen.c                                        :+:      :+:    :+:   */
+/*   ls_usage.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/30 13:29:11 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/30 13:33:34 by vludan           ###   ########.fr       */
+/*   Created: 2018/02/03 16:26:43 by vludan            #+#    #+#             */
+/*   Updated: 2018/02/03 16:33:31 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int		ft_intlen(intmax_t i)
+int		ls_usage(char v)
 {
-	int	n;
-
-	n = 0;
-	while (i)
-	{
-		i = i / 10;
-		n++;
-	}
-	return (n);
+	printf("%s %c\n", "ft_ls: illegal option --", v);
+	printf("%s\n", "usage: ft_ls [-RlartufgdsT@] [file ...]");
+	return (1);
 }

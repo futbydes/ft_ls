@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:40:10 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/02 16:29:19 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/03 17:48:48 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,19 @@ void				ls_d_conv(char *path, t_flags *flg)
 		perror("Error: ");
 	flg->path_in = path;
 	lst = ls_lstnew(lst, path, buf, flg);
-	ls_lstprint(lst, flg, path);
+	lst = ls_lstprint(lst, flg, path);
 	free(buf);
+	ls_lstfree(lst);
+}
+
+char			*ls_pathmaker(char *path, char *new_fld)
+{
+	char		t[2];
+	char		*temp;
+
+	ft_strcpy(t, "/");
+	if (path[(int)ft_strlen(path)] != '/')
+		temp = ft_strjoin(path, t);
+	temp = ft_strjoin(temp, new_fld);
+	return (temp);
 }

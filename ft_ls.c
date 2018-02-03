@@ -6,13 +6,13 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/02 16:38:49 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/03 17:29:18 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int				ft_memarrchr(char *arr, char *arr2)
+char			ft_memarrchr(char *arr, char *arr2)
 {
 	int			x;
 
@@ -20,10 +20,10 @@ int				ft_memarrchr(char *arr, char *arr2)
 	while (arr2[x] != 0)
 	{
 		if (!(ft_memchr(arr, arr2[x], (int)ft_strlen(arr))))
-			return (0);
+			return (arr2[x]);
 		x++;
 	}
-	return (1);
+	return (0);
 }
 
 void			flag_strct(char *arr, t_flags *flg)
@@ -53,19 +53,22 @@ int				flags_parser(int argc, char **argv, t_flags *flg)
 {
 	int			y;
 	char		*flags;
+	char		x;
 
+	x = 0;
 	y = 1;
 	flags = ft_memalloc(13);
 	ft_strcpy(flags, "RlartufgdsT@");
 	while (argc > y && argv[y][0] == '-' && argv[y][1] != '-')
 	{
-		if (!(ft_memarrchr(flags, argv[y])))
-			return (0);
+		x = ft_memarrchr(flags, argv[y]);
+		if (x)
+			return (ls_usage(x));
 		flag_strct(argv[y], flg);
 		y++;
 	}
 	free(flags);
-	return (1);
+	return (0);
 }
 
 void			path_parser(int	argc, char **argv, t_flags *flg)
@@ -101,10 +104,11 @@ int				main(int argc, char **argv)
 		scan_dir(".", flg);
 	else
 	{
-		flags_parser(argc, argv, flg);
+		if (flags_parser(argc, argv, flg))
+			return (1);
 		path_parser(argc, argv, flg);
 		main_conv(flg);
 	} 
 	free(flg);
-	return (1);
+	return (0);
 }

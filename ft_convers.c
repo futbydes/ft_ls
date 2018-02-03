@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/02 11:05:45 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/03 18:10:30 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,32 +27,41 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 			flg->path_in = ls_pathmaker(path, temp->name);
 			printf("\n%s:\n", flg->path_in);
 			recursive_dir_scan(flg->path_in, flg);
+			//free(flg->path_in);
 		}
 		temp = temp->next;
 	}
-	free(head);
+	ls_lstfree(head);
 }
 
 void				main_conv(t_flags *flg)
 {
 	struct stat 	*buf;
+	t_list			*temp;
+	int				x;
 
-	buf = ft_memalloc(sizeof(struct stat));
-	lstat(*(*flg).path, buf);
-	if (flg->d == 1 || S_ISLNK(buf->st_mode))
-		ls_d_conv(*(*flg).path, flg);
-	else if (flg->R == 1 && flg->d != 1)
-		recursive_dir_scan(*(*flg).path, flg);
-	else
-		scan_dir(*(*flg).path, flg);
-/*	if (flg->path == 0)
-		scan_dir(".", flags);
-	if (flg->d == 1) //tol'ko pokazivat' put' fayla i ispol'zovat' ego dlya inf
-		;
-	if (flg->l == 1 || flg->g == 1)
-		;
-	if (flg->r == 1)
-		; */
+	x = -1;
+	while (x++ > -2 && flg->path[x][0] != 0)
+	{
+		temp = 0;
+		flg->path[1][0] != 0 ? printf("%s:\n", flg->path[x]) : 0;
+		buf = ft_memalloc(sizeof(struct stat));
+		lstat(flg->path[x], buf);
+		if (flg->d == 1 || S_ISLNK(buf->st_mode))
+			ls_d_conv(flg->path[x], flg);
+		else if (flg->R == 1 && flg->d != 1)
+			recursive_dir_scan(flg->path[x], flg);
+		else
+			temp = scan_dir(flg->path[x], flg);
+		free(buf);
+		temp != 0 ? ls_lstfree(temp) : 0;
+		flg->path[x + 1][0] != 0 ? printf("\n") : 0;
+	}
+	x = -1;
+	while (x++ && flg->path[x][0] != 0)
+		free(flg->path[x]);
+	free(flg->path[x]);
+	free(flg->path);
 }
 
 t_list				*scan_dir(char *arg, t_flags *flg)
@@ -64,7 +73,10 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 
 	head = 0;
 	if (!(dir = opendir(arg)))
+	{
+		perror("Error: ");
 		return (0);
+	}
 	while ((dien = readdir(dir)) != 0)
 	{
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
@@ -75,21 +87,11 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 							dien->d_name) : dien->d_name), buf) < 0)
 			perror("Error: ");
 		head = ls_lstnew(head, dien->d_name, buf, flg);
+		flg->path_in != 0 ? free(flg->path_in) : 0;
 		free(buf);
 	}
 	closedir(dir);
 	head = ls_lstsort(head,flg);
-	ls_lstprint(head, flg, arg);
+	head = ls_lstprint(head, flg, arg);
 	return (head);
-}
-
-char			*ls_pathmaker(char *path, char *new_fld)
-{
-	char		t[2];
-	char		*temp;
-
-	ft_strcpy(t, "/");
-	temp = ft_strjoin(path, t);
-	temp = ft_strjoin(temp, new_fld);
-	return (temp);
 }

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/02 15:49:10 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/03 17:27:31 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <stdio.h> //perror
 # include <string.h> //strerrori
 # include <time.h> //time, ctime
+# include <errno.h>
 
 typedef struct 	s_flags
 {
@@ -75,24 +76,28 @@ char		*ft_strjoin(char const *s1, char const *s2);
 int			flags_parser(int argc, char **argv, t_flags *flg);
 void		path_parser(int	argc, char **argv, t_flags *flg);
 void		flag_strct(char *arr, t_flags *flg);
-int			ft_memarrchr(char *arr, char *arr2);
+char		ft_memarrchr(char *arr, char *arr2);
 t_list		*scan_dir(char *arg, t_flags *flg);
 void		main_conv(t_flags *flg);
 void		recursive_dir_scan(char *path, t_flags *flg);
-void		ls_lstprint(t_list *head,t_flags *flg, char *path);
+t_list		*ls_lstprint(t_list *head,t_flags *flg, char *path);
+void		ls_lstprint_a(t_list *head,t_flags *flg, char *path, char *buf);
 t_list      *ls_lstnew(t_list *head, char *name, struct stat *stat,
 		t_flags *flg);
 t_list		*ls_lstsort(t_list *head, t_flags *flg);
 t_list		*ls_lstbubsort(t_list **lst_m, int mode);
 void		ft_lstswap(t_list **head, t_list **swp);
 void		ls_lstrev(t_list **head);
+void		ls_lstfree(t_list *head);
 t_list		*ls_lstpushup(t_list *lst, t_list *temp);
 char		*ls_pathmaker(char *path, char *new_fld);
 void		ls_xattributes(char *path);
 void		ls_fdata(t_list *lst, struct stat *stat, t_flags *flg);
+void		ls_fdata_r(t_list *lst, struct stat *stat, t_flags *flg);
 int			ft_intlen(intmax_t i);
 void		ls_time(t_list *lst, t_flags *flg);
 void		ls_d_conv(char *path, t_flags *flg);
+int			ls_usage(char v);
 
 //err_usage;
 //err_nsf;
