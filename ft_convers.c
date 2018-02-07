@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 17:48:05 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 18:01:29 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,12 @@ void				main_conv(t_flags *flg)
 		else
 			temp = scan_dir(flg->path[x], flg);
 		free(buf);
-		if (temp != 0)
-			ls_lstfree(temp);
+		temp != 0 ? ls_lstfree(temp) : 0;
 		flg->path[x + 1][0] != 0 ? printf("\n") : 0;
 	}
 	x = -1;
 	while (x++ && flg->path[x][0] != 0)
 		free(flg->path[x]);
-	free(flg->path[x]);
 	free(flg->path);
 }
 

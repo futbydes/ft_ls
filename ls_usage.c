@@ -17,7 +17,7 @@ int		ls_usage(char v)
 	write(2, "ls: illegal option -- ", 22);
 	write(2, &v, 1);
 	write(2, "\n", 2);
-	write(2, "usage: ls [-RlartufgdsT@] [file ...]\n", 40);
+	write(2, "usage: ls [-RlartufgdsT@] [file ...]\n", 38);
 	return (1);
 }
 
