@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 15:52:27 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 17:48:05 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 		}
 		temp = temp->next;
 	}
+	free(path);
 	head != 0 ? ls_lstfree(head) : 0;
 }
 
@@ -49,7 +50,7 @@ void				main_conv(t_flags *flg)
 		if (flg->d == 1 || S_ISLNK(buf->st_mode))
 			ls_d_conv(flg->path[x], flg);
 		else if (flg->R == 1 && flg->d != 1)
-			recursive_dir_scan(flg->path[x], flg);
+			recursive_dir_scan(ls_pathmaker(flg->path[x], ""), flg);
 		else
 			temp = scan_dir(flg->path[x], flg);
 		free(buf);

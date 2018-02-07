@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:40:10 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 16:08:16 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 17:18:23 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,19 @@ char			*ls_pathmaker(char *path, char *new_fld)
 {
 	char		t[2];
 	char		*temp;
+	char		*temp2;
 
 	temp = 0;
 	ft_strcpy(t, "/");
-	temp = ft_strjoin(path, t);
-//	if (!(ft_memchr(path, '/', ft_strlen(path))))
-//		free(path);
+	if (path[(int)ft_strlen(path) - 1] == '/')
+	{
+		temp = ft_memalloc(ft_strlen(path) + 1);
+		temp = ft_strcpy(temp, path);
+	}
+	else
+		temp = ft_strjoin(path, t);
+	temp2 = temp;
 	temp = ft_strjoin(temp, new_fld);
+	free(temp2);
 	return (temp);
 }

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 15:48:24 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 16:15:51 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ int				flags_parser(int argc, char **argv, t_flags *flg)
 	{
 		x = ft_memarrchr(flags, argv[y]);
 		if (x)
+		{
+			free(flags);
 			return (ls_usage(x));
+		}
 		flag_strct(argv[y], flg);
 		y++;
 	}
