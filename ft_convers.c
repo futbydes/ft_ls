@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 15:36:57 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 15:52:27 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 			flg->path_in = ls_pathmaker(path, temp->name);
 			printf("\n%s:\n", flg->path_in);
 			recursive_dir_scan(flg->path_in, flg);
-			//free(flg->path_in);
 		}
 		temp = temp->next;
 	}
@@ -81,8 +80,7 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 			continue ;
 		buf = ft_memalloc(sizeof(struct stat));
 		flg->path_in = ls_pathmaker(arg,dien->d_name);
-		if (lstat((ft_strcmp(arg, ".") ? flg->path_in = ls_pathmaker(arg,
-							dien->d_name) : dien->d_name), buf) < 0)
+		if (lstat(flg->path_in, buf) < 0)
 			perror("");
 		head = ls_lstnew(head, dien->d_name, buf, flg);
 		flg->path_in != 0 ? free(flg->path_in) : 0;

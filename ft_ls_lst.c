@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 13:54:37 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 16:05:11 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ t_list		*ls_lstprint(t_list *lst,t_flags *flg, char *path)
 	char	*buf;
 	t_list	*temp;
 
+
 	buf = ft_memalloc(255);
 	temp = lst;
 	(flg->l || flg->g) && flg->d != 1 && lst != 0 ? 
@@ -127,7 +128,10 @@ t_list		*ls_lstprint(t_list *lst,t_flags *flg, char *path)
 		ls_lstprint_a(lst, flg, path, buf);
 		printf("\n");
 		if (flg->ext == 1)
-			ls_xattributes(ls_pathmaker(path, lst->name));
+		{
+//			flg->path_in != 0 ? free(flg->path_in) : 0;
+			ls_xattributes(flg->path_in = ls_pathmaker(path, lst->name));
+		}
 		lst = lst->next;
 	}
 	flg->maxlink = 0;
