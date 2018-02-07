@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/03 17:55:54 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 13:54:37 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,21 @@ void				ls_fdata_r(t_list *lst, struct stat *stat, t_flags *flg)
 	lst->f_rights[1] = ((stat->st_mode & S_IRUSR) ? 'r' : '-');
 	lst->f_rights[2] = ((stat->st_mode & S_IWUSR) ? 'w' : '-');
 	lst->f_rights[3] = ((stat->st_mode & S_IXUSR) ? 'x' : '-');
+	(stat->st_mode & S_ISUID) ? lst->f_rights[3] = 'S' : 0;
+	((stat->st_mode & S_IEXEC) && (stat->st_mode & S_ISUID)) ?
+		lst->f_rights[3] = 's' : 0;
 	lst->f_rights[4] = ((stat->st_mode & S_IRGRP) ? 'r' : '-');
 	lst->f_rights[5] = ((stat->st_mode & S_IWGRP) ? 'w' : '-');
 	lst->f_rights[6] = ((stat->st_mode & S_IXGRP) ? 'x' : '-');
+	(stat->st_mode & S_ISGID) ? lst->f_rights[6] = 'S' : 0;
+	((stat->st_mode & S_ISGID) && (stat->st_mode & S_IEXEC)) ?
+		lst->f_rights[6] = 's' : 0;
 	lst->f_rights[7] = ((stat->st_mode & S_IROTH) ? 'r' : '-');
 	lst->f_rights[8] = ((stat->st_mode & S_IWOTH) ? 'w' : '-');
 	lst->f_rights[9] = ((stat->st_mode & S_IXOTH) ? 'x' : '-');
 	(S_ISVTX & stat->st_mode) ? lst->f_rights[9] = 't' : '-';
+	((S_ISVTX & stat->st_mode) && (!(S_IXOTH & stat->st_mode))) ?
+		lst->f_rights[9] = 'T' : '-';
 	lst->f_rights[10] = (listxattr(flg->path_in, 0, 1024,
 				XATTR_NOFOLLOW) > 0 ? '@' : ' ');
 }

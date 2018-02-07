@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/03 18:10:30 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 15:36:57 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 		}
 		temp = temp->next;
 	}
-	ls_lstfree(head);
+	head != 0 ? ls_lstfree(head) : 0;
 }
 
 void				main_conv(t_flags *flg)
@@ -54,7 +54,8 @@ void				main_conv(t_flags *flg)
 		else
 			temp = scan_dir(flg->path[x], flg);
 		free(buf);
-		temp != 0 ? ls_lstfree(temp) : 0;
+		if (temp != 0)
+			ls_lstfree(temp);
 		flg->path[x + 1][0] != 0 ? printf("\n") : 0;
 	}
 	x = -1;
@@ -73,10 +74,7 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 
 	head = 0;
 	if (!(dir = opendir(arg)))
-	{
-		perror("Error: ");
-		return (0);
-	}
+		return (ls_error_msg(strerror(errno), arg));
 	while ((dien = readdir(dir)) != 0)
 	{
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
@@ -85,7 +83,7 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 		flg->path_in = ls_pathmaker(arg,dien->d_name);
 		if (lstat((ft_strcmp(arg, ".") ? flg->path_in = ls_pathmaker(arg,
 							dien->d_name) : dien->d_name), buf) < 0)
-			perror("Error: ");
+			perror("");
 		head = ls_lstnew(head, dien->d_name, buf, flg);
 		flg->path_in != 0 ? free(flg->path_in) : 0;
 		free(buf);

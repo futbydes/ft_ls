@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/03 17:27:31 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/07 15:27:54 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct 	s_flags
 	char		s;
 	char		T;
 	char		ext;
+	char		one;
 	int			maxlink;
 	long int	maxsize;
 	long int	maxblock;
@@ -74,7 +75,7 @@ size_t		ft_strlen(const char *s);
 int			ft_strcmp(const char *s1, const char *s2);
 char		*ft_strjoin(char const *s1, char const *s2);
 int			flags_parser(int argc, char **argv, t_flags *flg);
-void		path_parser(int	argc, char **argv, t_flags *flg);
+int			path_parser(int	argc, char **argv, t_flags *flg);
 void		flag_strct(char *arr, t_flags *flg);
 char		ft_memarrchr(char *arr, char *arr2);
 t_list		*scan_dir(char *arg, t_flags *flg);
@@ -98,6 +99,7 @@ int			ft_intlen(intmax_t i);
 void		ls_time(t_list *lst, t_flags *flg);
 void		ls_d_conv(char *path, t_flags *flg);
 int			ls_usage(char v);
+t_list		*ls_error_msg(char *msg, char *arg);
 
 //err_usage;
 //err_nsf;
