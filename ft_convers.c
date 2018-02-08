@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 18:01:29 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/08 16:09:44 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 	t_list			*head;
 	t_list			*temp;
 
-	head = scan_dir(path,flg);
+	head = scan_dir(path, flg);
 	temp = head;
 	while (temp != 0)
 	{
@@ -36,7 +36,7 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 
 void				main_conv(t_flags *flg)
 {
-	struct stat 	*buf;
+	struct stat		*buf;
 	t_list			*temp;
 	int				x;
 
@@ -49,7 +49,7 @@ void				main_conv(t_flags *flg)
 		lstat(flg->path[x], buf);
 		if (flg->d == 1 || S_ISLNK(buf->st_mode))
 			ls_d_conv(flg->path[x], flg);
-		else if (flg->R == 1 && flg->d != 1)
+		else if (flg->f_r == 1 && flg->d != 1)
 			recursive_dir_scan(ls_pathmaker(flg->path[x], ""), flg);
 		else
 			temp = scan_dir(flg->path[x], flg);
@@ -65,7 +65,7 @@ void				main_conv(t_flags *flg)
 
 t_list				*scan_dir(char *arg, t_flags *flg)
 {
-	DIR 			*dir;
+	DIR				*dir;
 	struct dirent	*dien;
 	struct stat		*buf;
 	t_list			*head;
@@ -78,7 +78,7 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 		if (dien->d_name[0] == '.' && (flg->a == 0 && flg->f == 0))
 			continue ;
 		buf = ft_memalloc(sizeof(struct stat));
-		flg->path_in = ls_pathmaker(arg,dien->d_name);
+		flg->path_in = ls_pathmaker(arg, dien->d_name);
 		if (lstat(flg->path_in, buf) < 0)
 			perror("");
 		head = ls_lstnew(head, dien->d_name, buf, flg);
@@ -86,7 +86,7 @@ t_list				*scan_dir(char *arg, t_flags *flg)
 		free(buf);
 	}
 	closedir(dir);
-	head = ls_lstsort(head,flg);
+	head = ls_lstsort(head, flg);
 	head = ls_lstprint(head, flg, arg);
 	return (head);
 }

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 16:23:49 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 16:15:51 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/08 15:47:08 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void			flag_strct(char *arr, t_flags *flg)
 	x = 1;
 	while ((int)ft_strlen(arr) > x)
 	{
-		arr[x] == 'R' ? flg->R = 1 : 0;
+		arr[x] == 'R' ? flg->f_r = 1 : 0;
 		arr[x] == 'l' ? flg->l = 1 : 0;
 		arr[x] == 'a' ? flg->a = 1 : 0;
 		arr[x] == 'r' ? flg->r = 1 : 0;
@@ -43,9 +43,10 @@ void			flag_strct(char *arr, t_flags *flg)
 		arr[x] == 'g' ? flg->g = 1 : 0;
 		arr[x] == 'd' ? flg->d = 1 : 0;
 		arr[x] == 's' ? flg->s = 1 : 0;
-		arr[x] == 'T' ? flg->T = 1 : 0;
+		arr[x] == 'T' ? flg->f_t = 1 : 0;
 		arr[x] == '@' ? flg->ext = 1 : 0;
 		arr[x] == '1' ? flg->one = 1 : 0;
+		arr[x] == 'e' ? flg->acl = 1 : 0;
 		x++;
 	}
 }
@@ -57,8 +58,8 @@ int				flags_parser(int argc, char **argv, t_flags *flg)
 	char		x;
 
 	y = 1;
-	flags = ft_memalloc(14);
-	ft_strcpy(flags, "RlartufgdsT@1");
+	flags = ft_memalloc(15);
+	ft_strcpy(flags, "RlartufgdsT@1e");
 	while (argc > y && argv[y][0] == '-' && argv[y][1] != '-')
 	{
 		x = ft_memarrchr(flags, argv[y]);
@@ -74,7 +75,7 @@ int				flags_parser(int argc, char **argv, t_flags *flg)
 	return (0);
 }
 
-int				path_parser(int	argc, char **argv, t_flags *flg)
+int				path_parser(int argc, char **argv, t_flags *flg)
 {
 	int			y;
 	int			x;
@@ -91,7 +92,7 @@ int				path_parser(int	argc, char **argv, t_flags *flg)
 	argc == y ? ft_strcpy(flg->path[x], ".") : 0;
 	while (argv[y] != 0)
 	{
-		flg->path[x] = ft_memalloc(ft_strlen(argv[y]) + 1);
+		flg->path[x] = ft_memalloc(ft_strlen(argv[y]) + 2);
 		ft_strcpy(flg->path[x], argv[y]);
 		x++;
 		y++;
@@ -112,7 +113,7 @@ int				main(int argc, char **argv)
 		if (flags_parser(argc, argv, flg) || path_parser(argc, argv, flg))
 			return (1);
 		main_conv(flg);
-	} 
+	}
 	free(flg);
 	return (0);
 }

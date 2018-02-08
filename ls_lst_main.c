@@ -6,17 +6,17 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 16:19:12 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/03 17:53:27 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/08 12:55:12 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void		ft_lstswap(t_list **head, t_list **swp)
+void			ft_lstswap(t_list **head, t_list **swp)
 {
-	t_list	*next;
-	t_list	*prev;
-	t_list	*root;
+	t_list		*next;
+	t_list		*prev;
+	t_list		*root;
 
 	prev = 0;
 	root = *head;
@@ -41,10 +41,10 @@ void		ft_lstswap(t_list **head, t_list **swp)
 	}
 }
 
-void		ls_lstrev(t_list **head)
+void			ls_lstrev(t_list **head)
 {
-	t_list	*next;
-	t_list	*root;
+	t_list		*next;
+	t_list		*root;
 
 	root = 0;
 	while ((*head))
@@ -57,11 +57,11 @@ void		ls_lstrev(t_list **head)
 	(*head) = root;
 }
 
-t_list		*ls_lstbubsort(t_list **lst_m, int mode)
+t_list			*ls_lstbubsort(t_list **lst_m, int mode)
 {
-	t_list	*lst;
-	int		n;
-	int		i;
+	t_list		*lst;
+	int			n;
+	int			i;
 
 	i = 1;
 	n = 2;
@@ -74,9 +74,9 @@ t_list		*ls_lstbubsort(t_list **lst_m, int mode)
 		while (i < n && lst->next != 0)
 		{
 			if (mode == 0 && ft_strcmp(lst->name, lst->next->name) < 0)
-				ft_lstswap(lst_m , &lst);
+				ft_lstswap(lst_m, &lst);
 			else if (mode == 1 && lst->time > lst->next->time)
-				ft_lstswap(lst_m , &lst);
+				ft_lstswap(lst_m, &lst);
 			lst = lst->next;
 			i++;
 		}
@@ -106,7 +106,7 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 void			ls_lstfree(t_list *head)
 {
 	t_list		*temp;
-	
+
 	while (head != 0)
 	{
 		temp = head;

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:40:10 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 17:18:23 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/08 16:22:18 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void				ls_time(t_list *lst, t_flags *flg)
 	else
 	{
 		temp = ft_memalloc(ft_strlen(f_time) + 1);
-		if (flg->T == 1)
+		if (flg->f_t == 1)
 			temp = ft_strncpy(temp, f_time, (ft_strlen(f_time) - 1));
 		else
 			temp = ft_strncpy(temp, f_time, 12);
@@ -60,6 +60,29 @@ void				ls_xattributes(char *path)
 	free(temp);
 }
 
+int					ls_acl_attr(char *path, int mode)
+{
+	acl_t			acl;
+	char			*string;
+	int				x;
+
+	string = ft_memalloc(500);
+	acl = acl_get_link_np(path, ACL_TYPE_EXTENDED);
+	if (acl != 0 && mode == 1)
+		x = 1;
+	else if (acl != 0 && mode == 0)
+	{
+		x = 1;
+		string = acl_to_text(acl, 0);
+		printf(" %s", string + 8);
+	}
+	else
+		x = 0;
+	acl_free(acl);
+	free(string);
+	return (x);
+}
+
 void				ls_d_conv(char *path, t_flags *flg)
 {
 	struct stat		*buf;
@@ -77,11 +100,11 @@ void				ls_d_conv(char *path, t_flags *flg)
 	ls_lstfree(lst);
 }
 
-char			*ls_pathmaker(char *path, char *new_fld)
+char				*ls_pathmaker(char *path, char *new_fld)
 {
-	char		t[2];
-	char		*temp;
-	char		*temp2;
+	char			t[2];
+	char			*temp;
+	char			*temp2;
 
 	temp = 0;
 	ft_strcpy(t, "/");

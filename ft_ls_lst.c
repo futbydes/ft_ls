@@ -6,16 +6,16 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/07 16:05:11 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/08 16:23:11 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_list			*ls_lstnew(t_list *head, char *name, struct stat *stat,
+t_list				*ls_lstnew(t_list *head, char *name, struct stat *stat,
 		t_flags *flg)
 {
-	t_list	*lst;
+	t_list			*lst;
 
 	lst = ft_memalloc(sizeof(t_list));
 	lst->name = ft_memalloc((int)ft_strlen(name) + 1);
@@ -85,10 +85,12 @@ void				ls_fdata(t_list *lst, struct stat *stat, t_flags *flg)
 	}
 }
 
-void			ls_lstprint_a(t_list *lst,t_flags *flg, char *path, char *buf)
+void				ls_lstprint_a(t_list *lst, t_flags *flg, char *path,
+	char *buf)
 {
 	if (flg->l == 1 || flg->g == 1)
 	{
+		ls_acl_attr(flg->path_in, 1) ? lst->f_rights[10] = '+' : 0;
 		flg->s == 1 ? printf("%*ld ", ((int)ft_intlen(flg->maxblock)),
 				lst->b_size) : 0;
 		printf("%-*s", ((int)ft_strlen(lst->f_rights)), lst->f_rights);
@@ -108,29 +110,29 @@ void			ls_lstprint_a(t_list *lst,t_flags *flg, char *path, char *buf)
 	}
 	printf("%s", lst->name);
 	if (S_ISLNK(lst->st_mode) && (flg->l || flg->g))
-		flg->d == 1 ? readlink(path, buf, 255) : 
-			readlink(ls_pathmaker(path, lst->name), buf, 255);
+		flg->d == 1 ? readlink(path, buf, 255) :
+			readlink(flg->path_in = ls_pathmaker(path, lst->name), buf, 255);
 	(S_ISLNK(lst->st_mode) && (flg->l || flg->g)) ? printf(" -> %s", buf) : 0;
 }
 
-t_list		*ls_lstprint(t_list *lst,t_flags *flg, char *path)
+t_list				*ls_lstprint(t_list *lst, t_flags *flg, char *path)
 {
-	char	*buf;
-	t_list	*temp;
-
+	char			*buf;
+	t_list			*temp;
 
 	buf = ft_memalloc(255);
 	temp = lst;
-	(flg->l || flg->g) && flg->d != 1 && lst != 0 ? 
+	(flg->l || flg->g) && flg->d != 1 && lst != 0 ?
 		printf("total %d\n", flg->totalblock) : 0;
 	while (lst != 0)
 	{
 		ls_lstprint_a(lst, flg, path, buf);
 		printf("\n");
-		if (flg->ext == 1)
+		if ((flg->acl || flg->ext) && (flg->l || flg->g))
 		{
-//			flg->path_in != 0 ? free(flg->path_in) : 0;
-			ls_xattributes(flg->path_in = ls_pathmaker(path, lst->name));
+			flg->path_in = ls_pathmaker(path, lst->name);
+			flg->acl ? ls_acl_attr(flg->path_in, 0) : 0;
+			flg->ext ? ls_xattributes(flg->path_in) : 0;
 		}
 		lst = lst->next;
 	}
