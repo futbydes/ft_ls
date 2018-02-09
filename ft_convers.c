@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/08 16:09:44 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/09 10:19:53 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,15 @@ void				main_conv(t_flags *flg)
 		if (flg->d == 1 || S_ISLNK(buf->st_mode))
 			ls_d_conv(flg->path[x], flg);
 		else if (flg->f_r == 1 && flg->d != 1)
-			recursive_dir_scan(ls_pathmaker(flg->path[x], ""), flg);
+			recursive_dir_scan(flg->path[x], flg);
 		else
 			temp = scan_dir(flg->path[x], flg);
 		free(buf);
-		temp != 0 ? ls_lstfree(temp) : 0;
+		temp != 0 && flg->f_r != 1 ? ls_lstfree(temp) : 0;
 		flg->path[x + 1][0] != 0 ? printf("\n") : 0;
 	}
 	x = -1;
-	while (x++ && flg->path[x][0] != 0)
+	while (++x && flg->path[x][0])
 		free(flg->path[x]);
 	free(flg->path);
 }

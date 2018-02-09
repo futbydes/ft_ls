@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/08 16:23:11 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/09 10:10:10 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void				ls_lstprint_a(t_list *lst, t_flags *flg, char *path,
 		ls_time(lst, flg);
 	}
 	printf("%s", lst->name);
+	//ls_lstprint_name(lst, flg);
 	if (S_ISLNK(lst->st_mode) && (flg->l || flg->g))
 		flg->d == 1 ? readlink(path, buf, 255) :
 			readlink(flg->path_in = ls_pathmaker(path, lst->name), buf, 255);
@@ -128,13 +129,13 @@ t_list				*ls_lstprint(t_list *lst, t_flags *flg, char *path)
 	{
 		ls_lstprint_a(lst, flg, path, buf);
 		printf("\n");
-		if ((flg->acl || flg->ext) && (flg->l || flg->g))
+		if (lst && (flg->acl || flg->ext) && (flg->l || flg->g))
 		{
 			flg->path_in = ls_pathmaker(path, lst->name);
 			flg->acl ? ls_acl_attr(flg->path_in, 0) : 0;
 			flg->ext ? ls_xattributes(flg->path_in) : 0;
 		}
-		lst = lst->next;
+		lst != 0 ? lst = lst->next : 0;
 	}
 	flg->maxlink = 0;
 	flg->maxsize = 0;

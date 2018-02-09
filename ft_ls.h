@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/08 15:46:07 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/08 17:29:18 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <errno.h>
 # include <sys/types.h>
 # include <sys/acl.h>
+# include <sys/ioctl.h>
 
 typedef struct			s_flags
 {
@@ -106,5 +107,7 @@ void					ls_time(t_list *lst, t_flags *flg);
 void					ls_d_conv(char *path, t_flags *flg);
 int						ls_usage(char v);
 t_list					*ls_error_msg(char *msg, char *arg);
+void					ls_lstprint_name(t_list *lst, t_flags *flg, char *buf,
+		char *path);
 
 #endif
