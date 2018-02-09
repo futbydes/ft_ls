@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/26 18:09:50 by vludan            #+#    #+#             */
-/*   Updated: 2017/12/20 15:57:53 by vludan           ###   ########.fr       */
+/*   Created: 2017/10/27 13:35:26 by vludan            #+#    #+#             */
+/*   Updated: 2017/12/20 15:57:23 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 
-void	*ft_memset(void *b, int c, size_t len)
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	int		x;
-	int		y;
-	int		*temp;
+	unsigned char	*dst_cp;
 
-	y = len;
-	x = 0;
-	temp = b;
-	while (x++ < y)
-		*(unsigned char*)b++ = (unsigned char)c;
-	return (temp);
+	dst_cp = (unsigned char*)dst;
+	if ((dst <= src) || (dst >= src + len))
+	{
+		while (len--)
+			*(unsigned char*)dst++ = *(unsigned char*)src++;
+	}
+	else
+	{
+		dst += len - 1;
+		src += len - 1;
+		while (len--)
+			*(unsigned char*)dst-- = *(unsigned char*)src--;
+	}
+	return (dst_cp);
 }

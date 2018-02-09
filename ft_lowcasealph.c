@@ -1,27 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memset.c                                        :+:      :+:    :+:   */
+/*   ft_lowcasealph.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/26 18:09:50 by vludan            #+#    #+#             */
-/*   Updated: 2017/12/20 15:57:53 by vludan           ###   ########.fr       */
+/*   Created: 2017/12/08 13:02:24 by vludan            #+#    #+#             */
+/*   Updated: 2017/12/21 11:43:37 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include "ft_printf.h"
 
-void	*ft_memset(void *b, int c, size_t len)
+char		*ft_lowcasealph(char **t)
 {
 	int		x;
-	int		y;
-	int		*temp;
 
-	y = len;
 	x = 0;
-	temp = b;
-	while (x++ < y)
-		*(unsigned char*)b++ = (unsigned char)c;
-	return (temp);
+	while (**t != 0)
+	{
+		if (**t >= 'A' && **t <= 'Z')
+			*(*t) += 32;
+		(*t)++;
+		x++;
+	}
+	(*t) -= x;
+	return (*t);
+}
+
+char		*ft_charr(unsigned char t)
+{
+	char	*arr;
+
+	arr = (char*)malloc(2);
+	arr[0] = t;
+	arr[1] = '\0';
+	return (arr);
 }

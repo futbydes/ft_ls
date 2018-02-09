@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:40:10 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 10:10:11 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/09 13:11:40 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void				ls_time(t_list *lst, t_flags *flg)
 	f_time++;
 	if ((tloc - 15811200) > lst->time)
 	{
-		printf("%.7s ", f_time);
+		ft_printf("%.7s ", f_time);
 		f_time += 16;
-		printf("%.4s ", f_time);
+		ft_printf("%.4s ", f_time);
 	}
 	else
 	{
@@ -36,7 +36,7 @@ void				ls_time(t_list *lst, t_flags *flg)
 			temp = ft_strncpy(temp, f_time, (ft_strlen(f_time) - 1));
 		else
 			temp = ft_strncpy(temp, f_time, 12);
-		printf("%-*s ", ((int)ft_strlen(temp)), temp);
+		ft_printf("%-*s ", ((int)ft_strlen(temp)), temp);
 		free(temp);
 	}
 }
@@ -52,8 +52,8 @@ void				ls_xattributes(char *path)
 	l_xatr = listxattr(path, xattr, 1024, XATTR_NOFOLLOW);
 	while (l_xatr > 0)
 	{
-		printf("%*s \t", ((int)ft_strlen(xattr) + 13), xattr);
-		printf("% ld\n", getxattr(path, xattr, 0, 255, 0, XATTR_NOFOLLOW));
+		ft_printf("%*s \t", ((int)ft_strlen(xattr) + 13), xattr);
+		ft_printf("% ld\n", getxattr(path, xattr, 0, 255, 0, XATTR_NOFOLLOW));
 		l_xatr -= ft_strlen(xattr) + 1;
 		xattr += ft_strlen(xattr) + 1;
 	}
@@ -74,7 +74,7 @@ int					ls_acl_attr(char *path, int mode)
 	{
 		x = 1;
 		string = acl_to_text(acl, 0);
-		printf(" %s", string + 8);
+		ft_printf(" %s", string + 8);
 	}
 	else
 		x = 0;
@@ -87,17 +87,24 @@ void				ls_d_conv(char *path, t_flags *flg)
 {
 	struct stat		*buf;
 	t_list			*lst;
+	int				x;
 
+	x = 0;
 	lst = 0;
 	flg->d = 1;
-	buf = ft_memalloc(sizeof(struct stat));
-	if (lstat(path, buf) < 0)
-		perror("Error: ");
 	flg->path_in = path;
-	lst = ls_lstnew(lst, path, buf, flg);
+	while (flg->path[x][0] != 0)
+	{
+		buf = ft_memalloc(sizeof(struct stat));
+		if (lstat(flg->path[x], buf) < 0)
+			perror("Error: ");
+		lst = ls_lstnew(lst, flg->path[x], buf, flg);
+		x++;
+		free(buf);
+	}
+	lst = ls_lstsort(lst, flg);
 	lst = ls_lstprint(lst, flg, path);
-	free(buf);
-	ls_lstfree(lst);
+	ls_lstfree(lst, flg, 1);
 }
 
 char				*ls_pathmaker(char *path, char *new_fld)

@@ -6,11 +6,11 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 17:57:45 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/30 14:01:32 by vludan           ###   ########.fr       */
+/*   Updated: 2017/12/20 15:59:29 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ls.h"
+#include <stdlib.h>
 
 char	*ft_strncpy(char *dst, const char *src, size_t len)
 {

@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 10:19:53 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/09 13:18:02 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void				recursive_dir_scan(char *path, t_flags *flg)
 				ft_strcmp(temp->name, ".."))
 		{
 			flg->path_in = ls_pathmaker(path, temp->name);
-			printf("\n%s:\n", flg->path_in);
+			ft_printf("\n%s:\n", flg->path_in);
 			recursive_dir_scan(flg->path_in, flg);
 		}
 		temp = temp->next;
 	}
 	free(path);
-	head != 0 ? ls_lstfree(head) : 0;
+	head != 0 ? ls_lstfree(head, flg, 1) : 0;
 }
 
 void				main_conv(t_flags *flg)
@@ -44,23 +44,22 @@ void				main_conv(t_flags *flg)
 	while (x++ > -2 && flg->path[x][0] != 0)
 	{
 		temp = 0;
-		flg->path[1][0] != 0 ? printf("%s:\n", flg->path[x]) : 0;
+		!flg->d && flg->path[1][0] != 0 ? ft_printf("%s:\n", flg->path[x]) : 0;
 		buf = ft_memalloc(sizeof(struct stat));
 		lstat(flg->path[x], buf);
-		if (flg->d == 1 || S_ISLNK(buf->st_mode))
+		if (flg->d == 1 || (S_ISLNK(buf->st_mode) && (flg->l || flg->g)))
 			ls_d_conv(flg->path[x], flg);
 		else if (flg->f_r == 1 && flg->d != 1)
 			recursive_dir_scan(flg->path[x], flg);
 		else
 			temp = scan_dir(flg->path[x], flg);
 		free(buf);
-		temp != 0 && flg->f_r != 1 ? ls_lstfree(temp) : 0;
-		flg->path[x + 1][0] != 0 ? printf("\n") : 0;
+		temp != 0 && flg->f_r != 1 ? ls_lstfree(temp, flg, 1) : 0;
+		flg->d != 1 && flg->path[x + 1][0] != 0 ? ft_printf("\n") : 0;
+		if (flg->d == 1)
+			break ;
 	}
-	x = -1;
-	while (++x && flg->path[x][0])
-		free(flg->path[x]);
-	free(flg->path);
+	ls_lstfree(0, flg, 2);
 }
 
 t_list				*scan_dir(char *arg, t_flags *flg)

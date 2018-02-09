@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 16:19:12 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/08 12:55:12 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/09 12:11:08 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,13 @@ t_list			*ls_lstsort(t_list *head, t_flags *flg)
 	return (sort);
 }
 
-void			ls_lstfree(t_list *head)
+void			ls_lstfree(t_list *head, t_flags *flg, int mode)
 {
 	t_list		*temp;
+	int			x;
 
-	while (head != 0)
+	x = -1;
+	while (mode == 1 && head != 0)
 	{
 		temp = head;
 		head->name != 0 ? free(head->name) : 0;
@@ -118,4 +120,12 @@ void			ls_lstfree(t_list *head)
 		head = head->next;
 		free(temp);
 	}
+	while (++x && flg->path[x][0] && mode == 2)
+		free(flg->path[x]);
+	mode == 2 ? free(flg->path) : 0;
+	mode == 3 ? flg->maxlink = 0 : 0;
+	mode == 3 ? flg->maxsize = 0 : 0;
+	mode == 3 ? flg->maxblock = 0 : 0;
+	mode == 3 ? flg->totalblock = 0 : 0;
+	mode == 3 ? flg->linesize = 0 : 0;
 }

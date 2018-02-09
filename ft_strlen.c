@@ -6,11 +6,11 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 16:45:37 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/16 15:27:42 by vludan           ###   ########.fr       */
+/*   Updated: 2017/12/20 15:59:02 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ls.h"
+#include <stdlib.h>
 
 size_t	ft_strlen(const char *s)
 {

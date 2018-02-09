@@ -6,11 +6,9 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 17:16:19 by vludan            #+#    #+#             */
-/*   Updated: 2018/01/16 15:27:20 by vludan           ###   ########.fr       */
+/*   Updated: 2017/11/06 13:27:29 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "ft_ls.h"
 
 char	*ft_strcpy(char *dst, const char *src)
 {
