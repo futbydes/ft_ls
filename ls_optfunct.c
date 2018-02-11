@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 13:40:10 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 13:11:40 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/11 11:22:35 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,13 +91,15 @@ void				ls_d_conv(char *path, t_flags *flg)
 
 	x = 0;
 	lst = 0;
-	flg->d = 1;
 	flg->path_in = path;
 	while (flg->path[x][0] != 0)
 	{
 		buf = ft_memalloc(sizeof(struct stat));
 		if (lstat(flg->path[x], buf) < 0)
+		{
 			perror("Error: ");
+			x++;
+		}
 		lst = ls_lstnew(lst, flg->path[x], buf, flg);
 		x++;
 		free(buf);

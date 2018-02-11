@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 17:01:09 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 15:54:45 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/11 14:28:42 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@ t_list				*ls_lstprint_name(t_list *lst, t_flags *flg)
 	struct winsize	ws;
 	int				i;
 
+	i = 0;
+	(flg->l || flg->g) ? ls_time(lst, flg) : 0;
 	if (flg->l != 1 && flg->g != 1 && flg->one != 1)
 	{
 		ioctl(0, TIOCGWINSZ, &ws);
+		flg->linesize == 0 ? flg->linesize = ws.ws_row / 2 : 0;
 		i = ws.ws_col / flg->linesize;
 		ls_lstcolmn(lst, flg, i);
 		return (0);

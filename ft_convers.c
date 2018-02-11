@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 18:38:30 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 13:18:02 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/11 14:26:20 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,26 +40,75 @@ void				main_conv(t_flags *flg)
 	t_list			*temp;
 	int				x;
 
-	x = -1;
-	while (x++ > -2 && flg->path[x][0] != 0)
+	x = 0;
+	buf = 0;
+	while (flg->path[x][0] != 0)
 	{
 		temp = 0;
-		!flg->d && flg->path[1][0] != 0 ? ft_printf("%s:\n", flg->path[x]) : 0;
-		buf = ft_memalloc(sizeof(struct stat));
-		lstat(flg->path[x], buf);
-		if (flg->d == 1 || (S_ISLNK(buf->st_mode) && (flg->l || flg->g)))
+		if (flg->d == 1)
 			ls_d_conv(flg->path[x], flg);
 		else if (flg->f_r == 1 && flg->d != 1)
 			recursive_dir_scan(flg->path[x], flg);
 		else
-			temp = scan_dir(flg->path[x], flg);
-		free(buf);
-		temp != 0 && flg->f_r != 1 ? ls_lstfree(temp, flg, 1) : 0;
-		flg->d != 1 && flg->path[x + 1][0] != 0 ? ft_printf("\n") : 0;
+			x = scan_path(x, flg, buf);
 		if (flg->d == 1)
 			break ;
+		x++;
 	}
 	ls_lstfree(0, flg, 2);
+}
+
+int					scan_path(int x, t_flags *flg, struct stat *buf)
+{
+	t_list			*head;
+	t_list			*f_head;
+
+	f_head = 0;
+	head = 0;
+	while (flg->path[x][0] != 0)
+	{
+		buf = ft_memalloc(sizeof(struct stat));
+		while (lstat(flg->path[x], buf) < 0)
+		{
+			ls_error_msg(strerror(errno), flg->path[x]);
+			free(buf);
+			scan_path_op(x, flg, f_head, head);
+			return (x);
+		}
+		flg->path_in = flg->path[x];
+		if (S_ISDIR(buf->st_mode))
+			head = ls_lstnew(head, flg->path[x], buf, flg);
+		else
+			f_head = ls_lstnew(f_head, flg->path[x], buf, flg);
+		free(buf);
+		x++;
+	}
+	scan_path_op(x, flg, f_head, head);
+	return (x - 1);
+}
+
+void				scan_path_op(int x, t_flags *flg, t_list *f_head,
+		t_list *head)
+{
+	t_list			*temp;
+	t_list			*temp2;
+
+	if (!f_head && !head)
+		return ;
+	f_head != 0 ? f_head = ls_lstsort(f_head, flg) : 0;
+	f_head != 0 ? f_head = ls_lstprint(f_head, flg, flg->path[x]) : 0;
+	f_head != 0 ? ls_lstfree(f_head, flg, 1) : 0;
+	head != 0 ? head = ls_lstsort(head, flg) : 0;
+	temp = head;
+	while (head != 0)
+	{
+		x > 1 ? ft_printf("%s:\n", head->name) : 0;
+		temp2 = scan_dir(head->name, flg);
+		head = head->next;
+		ls_lstfree(temp2, flg, 1);
+		head != 0 ? ft_printf("\n") : 0;
+	}
+	temp != 0 ? ls_lstfree(head, flg, 1) : 0;
 }
 
 t_list				*scan_dir(char *arg, t_flags *flg)

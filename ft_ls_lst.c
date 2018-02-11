@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/18 11:29:58 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 15:17:36 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/11 12:24:00 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ void				ls_lstprint_a(t_list **lst, t_flags *fg, char *path,
 	fg->path_in = ls_pathmaker(path, (*lst)->name);
 	if (fg->l == 1 || fg->g == 1)
 	{
-		ls_acl_attr(fg->path_in, 1) ? (*lst)->f_rights[10] = '+' : 0;
+		ls_acl_attr(fg->path_in, 1) && (*lst)->f_rights[10] != '@' ?
+			(*lst)->f_rights[10] = '+' : 0;
 		fg->s == 1 ? ft_printf("%*ld ", ((int)ft_intlen(fg->maxblock)),
 				(*lst)->b_size) : 0;
 		ft_printf("%-*s", ((int)ft_strlen((*lst)->f_rights)), (*lst)->f_rights);
@@ -109,7 +110,6 @@ void				ls_lstprint_a(t_list **lst, t_flags *fg, char *path,
 		}
 		else
 			ft_printf("%*lld ", (ft_intlen(fg->maxsize)), (*lst)->f_size);
-		ls_time(*lst, fg);
 	}
 	*lst = ls_lstprint_name(*lst, fg);
 	if ((fg->l || fg->g) && S_ISLNK((*lst)->st_mode))

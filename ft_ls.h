@@ -6,7 +6,7 @@
 /*   By: vludan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/14 11:50:51 by vludan            #+#    #+#             */
-/*   Updated: 2018/02/09 15:28:03 by vludan           ###   ########.fr       */
+/*   Updated: 2018/02/11 11:18:51 by vludan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,9 @@ t_list					*ls_error_msg(char *msg, char *arg);
 t_list					*ls_lstprint_name(t_list *lst, t_flags *flg);
 int						ls_lstcount(t_list *lst);
 void					ls_lstcolmn(t_list *lst, t_flags *flg, int c);
+int						scan_path(int x, t_flags *flg, struct stat *buf);
 int						ft_printf(char *spec, ...);
+void					scan_path_op(int x, t_flags *flg, t_list *f_head,
+		t_list *head);
 
 #endif
